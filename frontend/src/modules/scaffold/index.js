@@ -207,24 +207,25 @@ define(function(require) {
 	}
 
 	var buildFieldsets = function(schema, options) {
-
 		// Setup default fieldsets
 		var fieldsets = {
 			general: {
+				id: 'general',
 				legend: Origin.l10n.t('app.general'),
 				fields: []
 			},
-			// ::TODO
-			// I want to remove this please
 			properties: {
+				id: 'properties',
 				legend: Origin.l10n.t('app.properties'),
 				fields: []
 			},
 			settings :{
+				id: 'settings',
 				legend: Origin.l10n.t('app.settings'),
 				fields: []
 			},
 			extensions: {
+				id: 'extensions',
 				legend: Origin.l10n.t('app.extensions'),
 				fields: ['_extensions']
 			}
@@ -334,13 +335,10 @@ define(function(require) {
 	}
 
 	Scaffold.addCustomField = function(fieldName, view, overwrite) {
-		// Check if field already exists
 		if (Backbone.Form.editors[fieldName] && !overwrite) {
-			return console.log("Sorry, the custom field you're trying to add already exists")
-		} else {
-			Backbone.Form.editors[fieldName] = view;
+			return console.log("Sorry, the custom field you're trying to add (" + fieldName + ") already exists")
 		}
-
+		Backbone.Form.editors[fieldName] = view;
 	}
 
 	Scaffold.addCustomValidator = function(name, validatorMethod) {
@@ -357,19 +355,16 @@ define(function(require) {
 	};
 
 	Scaffold.addCustomTemplate = function(templateName, template, overwrite) {
-		// Check if arguments are correct
 		if (!templateName) {
 			return console.log('Custom Templates need a name');
 		}
 		if (!template) {
 			return console.log('Custom Templates need a template');
 		}
-		// Check if custom template already exists
 		if (customTemplates[templateName] && !overwrite) {
-			return console.log("Sorry, the custom template you're trying to add already exists");
-		} else {
-			customTemplates[templateName] = template;
+			return console.log("Sorry, the custom template you're trying to add (" + fieldName + ") already exists");
 		}
+		customTemplates[templateName] = template;
 	};
 
 	Scaffold.getCurrentModel = function() {
