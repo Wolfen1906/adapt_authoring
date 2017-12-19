@@ -1,6 +1,5 @@
 // LICENCE https://github.com/adaptlearning/adapt_authoring/blob/master/LICENSE
 define(function(require) {
-
   var Origin = require('core/origin');
   var OriginView = require('core/views/originView');
   var SidebarFieldsetFilterView = require('./sidebarFieldsetFilterView');
@@ -8,23 +7,23 @@ define(function(require) {
   var Helpers = require('core/helpers');
 
   var SidebarItemView = OriginView.extend({
-
     className: 'sidebar-item',
 
     events: {
-      'click button.editor-common-sidebar-project'      : 'editProject',
-      'click button.editor-common-sidebar-config'       : 'editConfiguration',
-      'click button.editor-common-sidebar-extensions'   : 'manageExtensions',
-      'click button.editor-common-sidebar-menusettings' : 'editMenu',
-      'click button.editor-common-sidebar-select-theme' : 'selectTheme',
-      'click button.editor-common-sidebar-download'     : 'downloadProject',
-      'click button.editor-common-sidebar-preview'      : 'previewProject',
-      'click button.editor-common-sidebar-export'       : 'exportProject',
-      'click button.editor-common-sidebar-close'        : 'closeProject'
+      'click button': 'onButtonClick',
+      'click button.editor-common-sidebar-project': 'editProject',
+      'click button.editor-common-sidebar-config': 'editConfiguration',
+      'click button.editor-common-sidebar-extensions': 'manageExtensions',
+      'click button.editor-common-sidebar-menusettings': 'editMenu',
+      'click button.editor-common-sidebar-select-theme': 'selectTheme',
+      'click button.editor-common-sidebar-download': 'downloadProject',
+      'click button.editor-common-sidebar-preview': 'previewProject',
+      'click button.editor-common-sidebar-export': 'exportProject',
+      'click button.editor-common-sidebar-close': 'closeProject'
     },
 
     initialize: function(options) {
-
+      this.preRender();
         // Set form on view
         if (options && options.form) {
           this.form = options.form;
@@ -33,18 +32,19 @@ define(function(require) {
         this.listenTo(Origin, 'sidebar:resetButtons', this.resetButtons);
         this.listenTo(Origin, 'sidebar:views:animateIn', this.animateViewIn);
         _.defer(_.bind(function() {
-            this.setupView();
-            if (this.form) {
-              this.setupFieldsetFilters();
-              this.listenTo(Origin, 'editorSidebar:showErrors', this.onShowErrors);
-            }
+          this.setupView();
+          if (this.form) {
+            this.setupFieldsetFilters();
+            this.listenTo(Origin, 'editorSidebar:showErrors', this.onShowErrors);
+          }
         }, this));
     },
 
+    preRender: function() {},
     postRender: function() {},
 
     setupView: function() {
-        this.listenTo(Origin, 'sidebar:views:remove', this.remove);
+      this.listenTo(Origin, 'sidebar:views:remove', this.remove);
     },
 
     setupFieldsetFilters: function() {
@@ -60,23 +60,24 @@ define(function(require) {
     onShowErrors: function(errors) {
       this.$('.sidebar-fieldset-filter').removeClass('error');
 
-      if (errors) {
-        // If there's error we should reset the save button
-        this.resetButtons();
-        // Go through each error and see where this error fits in the fieldsets
-        // this way we can notify the user something is invalid on the sidebar filters
-        _.each(errors, function(error, attribute) {
-          _.each(this.form.options.fieldsets, function(fieldset, key) {
-            //var fieldKeys = _.keys(fieldset.fields);
-            if (_.contains(fieldset.fields, attribute)) {
-              // Convert fieldsets legend value to class name
-              var className = Helpers.stringToClassName(fieldset.legend);
-              // Set error message
-              this.$('.sidebar-fieldset-filter-' + className).addClass('error');
-            }
-          }, this);
-        }, this);
+      if (!errors) {
+        return;
       }
+      // If there's error we should reset the save button
+      this.resetButtons();
+      // Go through each error and see where this error fits in the fieldsets
+      // this way we can notify the user something is invalid on the sidebar filters
+      _.each(errors, function(error, attribute) {
+        _.each(this.form.options.fieldsets, function(fieldset, key) {
+          if (!_.contains(fieldset.fields, attribute)) {
+            return;
+          }
+          // Convert fieldsets legend value to class name
+          var className = Helpers.stringToClassName(fieldset.legend);
+          // Set error message
+          this.$('.sidebar-fieldset-filter-' + className).addClass('error');
+        }, this);
+      }, this);
     },
 
     updateButton: function(buttonClass, updateText) {
@@ -94,9 +95,19 @@ define(function(require) {
     },
 
     animateViewIn: function() {
-        this.$el.velocity({'left': '0%', 'opacity': 1}, "easeOutQuad");
+      this.$el.velocity({ 'left': '0%', 'opacity': 1 }, "easeOutQuad");
     },
 
+    onButtonClick: function(e) {
+      e && e.preventDefault();
+      var dataEvent = $(e.currentTarget).attr('data-event');
+      if(dataEvent) {
+        Origin.trigger('editorCommon:' + dataEvent);
+      }
+    },
+    /*
+    * FIXME transition the below to use onButtonClick
+    */
     navigateToEditorPage: function(page) {
       Origin.router.navigateTo('editor/' + Origin.editor.data.course.get('_id') + '/' + page);
     },
@@ -136,9 +147,8 @@ define(function(require) {
     closeProject: function() {
       Origin.router.navigateTo('dashboard');
     }
-
   });
 
   return SidebarItemView;
 
-})
+});
