@@ -1,0 +1,50 @@
+Hi all,
+
+I am installing the authoring tool on a Win 10 laptop. Following the Github install instructions but have got to the point of running the install script.
+
+When i do I am presented with the following failure. Does anyone have an idea of why?
+
+node install
+
+This script will install the application.
+Would you like to continue?
+> Continue? Y/n (Y) y
+
+We need to configure the tool before install.
+Tip: just press ENTER to accept the default value in brackets.
+> Server port (5000)
+> Server name (localhost)
+> Database host (localhost)
+> Master database name (adapt-tenant-master)
+> Database server port (27017)
+> Data directory path (data)
+> Session secret (value used when saving session cookie data) (your-session-secret)
+> Git repository URL to be used for the authoring tool source code (https://github.com/adaptlearning/adapt_authoring.git)
+> Git repository URL to be used for the framework source code (https://github.com/adaptlearning/adapt_framework.git)
+> Specific git revision to be used for the framework. Accepts any valid revision type (e.g. branch/tag/commit) (tags/v2.2.3)
+> Are you using ffmpeg? y/N (N) y
+> Will you be using an SMTP server? (used for sending emails) y/N (N)
+Now we need to configure the master tenant.
+Tip: just press ENTER to accept the default value in brackets.
+
+module.js:540
+    throw err;
+    ^
+
+Error: Cannot find module 'internal/util/types'
+    at Function.Module._resolveFilename (module.js:538:15)
+    at Function.Module._load (module.js:468:25)
+    at Module.require (module.js:587:17)
+    at require (internal/module.js:11:18)
+    at evalmachine.<anonymous>:31:26
+    at Object.<anonymous> (C:\adapt_authoring-master\node_modules\bower\node_modules\graceful-fs\fs.js:11:1)
+    at Module._compile (module.js:643:30)
+    at Object.Module._extensions..js (module.js:654:10)
+    at Module.load (module.js:556:32)
+    at tryModuleLoad (module.js:499:12)
+    at Function.Module._load (module.js:491:3)
+    at Module.require (module.js:587:17)
+    at require (internal/module.js:11:18)
+    at Object.<anonymous> (C:\adapt_authoring-master\node_modules\bower\node_modules\graceful-fs\graceful-fs.js:3:27)
+    at Module._compile (module.js:643:30)
+    at Object.Module._extensions..js (module.js:654:10)
